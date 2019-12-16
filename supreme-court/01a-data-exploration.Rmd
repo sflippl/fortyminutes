@@ -1,0 +1,56 @@
+---
+title: "Exploring Supreme Court data I.1"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+load("data/supreme-court-1-1.Rdata")
+```
+
+```{r}
+sup_court <- SCDB_2019_01_caseCentered_Citation
+```
+
+```{r}
+colnames(sup_court)
+```
+
+Right now, we are interested in decisions.
+
+```{r}
+sup_court %>%
+    head() %>%
+    select(contains('decision'))
+```
+
+This is not what we need.
+
+```{r}
+sup_court
+```
+
+As an example, the full opinion to 'Cleveland v. United States' can be found ![here](https://www.courtlistener.com/opinion/104324/cleveland-v-united-states/). We will therefore begin by trying to crawl this website.
+
+A crawler in R is given by the package ![RCrawler](https://github.com/salimk/Rcrawler).
+
+```{r}
+library(Rcrawler)
+ex_link <- 'https://www.courtlistener.com/opinion/104324/cleveland-v-united-states/'
+extracted_decision <- LinkExtractor(ex_link)
+extracted_decision %>% names()
+```
+
+```{r}
+extracted_decision$Info %>% names()
+```
+
+```{r}
+decision_info <- extracted_decision$Info
+decision_page <- decision_info$Source_page
+```
+
+The decision page consists of the entire html document. We therefore need some way of simplifying this document.
+
+**Intermediate** 40 minutes.
+
